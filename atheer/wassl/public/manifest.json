@@ -1,0 +1,46 @@
+{
+  "name": "وَصْل — دردشة عربية فورية",
+  "short_name": "وَصْل",
+  "description": "منصة دردشة عربية فورية وآمنة مع غرف خاصة وعامة",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d0f14",
+  "theme_color": "#0d0f14",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["social", "communication"],
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "ادخل الدردشة",
+      "short_name": "دردشة",
+      "description": "افتح غرف الدردشة مباشرة",
+      "url": "/index.html",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "المدونة",
+      "short_name": "مدونة",
+      "description": "اقرأ أحدث المقالات",
+      "url": "/blog.html",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

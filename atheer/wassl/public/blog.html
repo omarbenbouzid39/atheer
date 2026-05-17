@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <script>
+    // Prevent Flash of Wrong Theme
+    (function(){
+      var t = localStorage.getItem('wasl_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.style.colorScheme = t;
+      if (t === 'light') {
+        document.documentElement.classList.add('light-pre');
+      }
+    })();
+  </script>
+  <style>
+    /* Applied immediately before CSS loads */
+    html:not(.light-pre) body { background: #0d0f14; color: #f1f5f9; }
+    html.light-pre body { background: #f8fafc; color: #0f172a; }
+  </style>
+  <meta charset="UTF-8" />
+  <!-- SEO Meta Tags -->
+  <title>مدونة وَصْل | مقالات تقنية وتطوير ذات وعمل حر بالعربية</title>
+  <meta name="description" content="مقالات أسبوعية في التقنية وتطوير الذات والعمل الحر والدراسة. محتوى عربي أصيل يساعدك على التطور المهني والشخصي." />
+  <meta name="keywords" content="مدونة تقنية عربية, مقالات تطوير ذات, عمل حر عربي, تعلم برمجة, مقالات دراسة, تقنية عربية" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="omar benbouzid dev" />
+  <link rel="canonical" href="https://nubl-1.onrender.com/blog.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="مدونة وَصْل | مقالات تقنية وتطوير ذات وعمل حر بالعربية" />
+  <meta property="og:description" content="مقالات أسبوعية في التقنية وتطوير الذات والعمل الحر والدراسة. محتوى عربي أصيل يساعدك على التطور المهني والشخصي." />
+  <meta property="og:url" content="https://nubl-1.onrender.com/blog.html" />
+  <meta property="og:site_name" content="وَصْل" />
+  <meta property="og:locale" content="ar_AR" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="مدونة وَصْل | مقالات تقنية وتطوير ذات وعمل حر بالعربية" />
+  <meta name="twitter:description" content="مقالات أسبوعية في التقنية وتطوير الذات والعمل الحر والدراسة. محتوى عربي أصيل يساعدك على التطور المهني والشخصي." />
+  <!-- Google Verification -->
+  <meta name="google-site-verification" content="QGKK3I4G_T6kbsOGlT4k7MOzsUIPkgCvfBqqbsM2Mdk" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared-pages.css" />
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2326556370802000" crossorigin="anonymous"></script>
+</head>
+<body class="dark-mode">
+<script src="shared.js"></script>
+
+<div class="page-wrap">
+  <div class="page-hero">
+    <div class="page-hero-tag">المدونة</div>
+    <h1 class="page-title">اقرأ، تعلّم، تطور</h1>
+    <p class="page-subtitle">مقالات أسبوعية في التقنية وتطوير الذات والعمل الحر — مكتوبة بأسلوب بسيط وعملي</p>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:36px" id="filter-bar">
+    <button class="filter-btn active" data-cat="all" onclick="filterPosts('all',this)">الكل</button>
+    <button class="filter-btn" data-cat="tech" onclick="filterPosts('tech',this)">💻 تقنية</button>
+    <button class="filter-btn" data-cat="self" onclick="filterPosts('self',this)">🌱 تطوير ذات</button>
+    <button class="filter-btn" data-cat="work" onclick="filterPosts('work',this)">💼 عمل حر</button>
+    <button class="filter-btn" data-cat="study" onclick="filterPosts('study',this)">📚 دراسة</button>
+  </div>
+
+  <div class="blog-grid" id="blog-grid">
+
+    <a class="blog-card" href="/article-dev-tools-free.html" data-cat="tech">
+      <div class="blog-card-cover">💻</div>
+      <div class="blog-card-body">
+        <span class="blog-card-cat">تقنية</span>
+        <div class="blog-card-title">10 أدوات مجانية لا يعرفها أغلب المطورين</div>
+        <div class="blog-card-excerpt">اكتشف مجموعة من الأدوات المجانية التي ستوفر عليك ساعات من العمل اليومي وتزيد إنتاجيتك كمطور برمجيات.</div>
+        <div class="blog-card-footer">
+          <span>✍️ فريق وَصْل</span>
+          <span>5 دقائق قراءة</span>
+          <span class="read-more">اقرأ المزيد →</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="blog-card" href="/article-reading-habit-21-days.html" data-cat="self">
+      <div class="blog-card-cover">🌱</div>
+      <div class="blog-card-body">
+        <span class="blog-card-cat">تطوير ذات</span>
+        <div class="blog-card-title">كيف تبني عادة القراءة اليومية في 21 يوماً</div>
+        <div class="blog-card-excerpt">خطوات عملية مجربة لبناء عادة القراءة المنتظمة وتحويلها من واجب ممل إلى متعة يومية حقيقية.</div>
+        <div class="blog-card-footer">
+          <span>✍️ فريق وَصْل</span>
+          <span>4 دقائق قراءة</span>
+          <span class="read-more">اقرأ المزيد →</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="blog-card" href="/article-freelance-guide-beginners.html" data-cat="work">
+      <div class="blog-card-cover">💼</div>
+      <div class="blog-card-body">
+        <span class="blog-card-cat">عمل حر</span>
+        <div class="blog-card-title">دليل المبتدئ للعمل الحر: من الصفر إلى أول عميل</div>
+        <div class="blog-card-excerpt">كل ما تحتاج معرفته لبدء مسيرتك في الفريلانس: المنصات، التسعير، بناء البروفايل، والتعامل مع العملاء.</div>
+        <div class="blog-card-footer">
+          <span>✍️ فريق وَصْل</span>
+          <span>7 دقائق قراءة</span>
+          <span class="read-more">اقرأ المزيد →</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="blog-card" href="/article-pomodoro-technique-study.html" data-cat="study">
+      <div class="blog-card-cover">📚</div>
+      <div class="blog-card-body">
+        <span class="blog-card-cat">دراسة</span>
+        <div class="blog-card-title">تقنية بومودورو: الأسلوب الذي يضاعف تركيزك خلال الدراسة</div>
+        <div class="blog-card-excerpt">تعرّف على تقنية بومودورو وكيف تطبقها بشكل صحيح لتحسين تركيزك واستيعابك خلال جلسات الدراسة الطويلة.</div>
+        <div class="blog-card-footer">
+          <span>✍️ فريق وَصْل</span>
+          <span>4 دقائق قراءة</span>
+          <span class="read-more">اقرأ المزيد →</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="blog-card" href="/article-ai-daily-life-uses.html" data-cat="tech">
+      <div class="blog-card-cover">🤖</div>
+      <div class="blog-card-body">
+        <span class="blog-card-cat">تقنية</span>
+        <div class="blog-card-title">الذكاء الاصطناعي في حياتك اليومية: 8 استخدامات عملية</div>
+        <div class="blog-card-excerpt">كيف يمكنك الاستفادة من أدوات الذكاء الاصطناعي في مهامك اليومية سواء في العمل أو الدراسة أو الحياة الشخصية.</div>
+        <div class="blog-card-footer">
+          <span>✍️ فريق وَصْل</span>
+          <span>6 دقائق قراءة</span>
+          <span class="read-more">اقرأ المزيد →</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="blog-card" href="/article-5-income-sources-online.html" data-cat="work">
+      <div class="blog-card-cover">💰</div>
+      <div class="blog-card-body">
+        <span class="blog-card-cat">عمل حر</span>
+        <div class="blog-card-title">5 مصادر دخل إضافي يمكنك البدء بها الآن</div>
+        <div class="blog-card-excerpt">أفكار حقيقية وقابلة للتطبيق لتنويع مصادر دخلك عبر الإنترنت، لا تحتاج رأس مال كبير للبدء.</div>
+        <div class="blog-card-footer">
+          <span>✍️ فريق وَصْل</span>
+          <span>5 دقائق قراءة</span>
+          <span class="read-more">اقرأ المزيد →</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="blog-card" href="/article-time-management-mistakes.html" data-cat="self">
+      <div class="blog-card-cover">⏰</div>
+      <div class="blog-card-body">
+        <span class="blog-card-cat">تطوير ذات</span>
+        <div class="blog-card-title">إدارة الوقت: لماذا تفشل أغلب الطرق التقليدية؟</div>
+        <div class="blog-card-excerpt">نظرة نقدية على أساليب إدارة الوقت الشائعة وما الذي يجعل بعضها يفشل، مع بدائل أكثر فاعلية.</div>
+        <div class="blog-card-footer">
+          <span>✍️ فريق وَصْل</span>
+          <span>5 دقائق قراءة</span>
+          <span class="read-more">اقرأ المزيد →</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="blog-card" href="/article-free-arabic-programming-platforms.html" data-cat="study">
+      <div class="blog-card-cover">🎓</div>
+      <div class="blog-card-body">
+        <span class="blog-card-cat">دراسة</span>
+        <div class="blog-card-title">أفضل المنصات التعليمية المجانية لتعلم البرمجة عربياً</div>
+        <div class="blog-card-excerpt">قائمة شاملة ومحدّثة بأفضل المصادر العربية والإنجليزية المجانية لتعلم البرمجة والتطوير من الصفر.</div>
+        <div class="blog-card-footer">
+          <span>✍️ فريق وَصْل</span>
+          <span>6 دقائق قراءة</span>
+          <span class="read-more">اقرأ المزيد →</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<style>
+  .blog-card { text-decoration: none; color: inherit; }
+  .filter-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 18px;
+    transition: all .2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--accent-glow);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .blog-card.hidden-post { display: none; }
+</style>
+
+<script>
+  function filterPosts(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.blog-card').forEach(card => {
+      const match = cat === 'all' || card.dataset.cat === cat;
+      card.classList.toggle('hidden-post', !match);
+    });
+  }
+</script>
+</body>
+</html>
