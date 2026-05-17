@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>بصير — حسابي</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="بصير">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+.cover{height:220px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0a1628 0%,#1a3a2a 40%,#2a1a0a 100%)}
+.cover-glow{position:absolute;inset:0;background:radial-gradient(circle at 20% 50%,rgba(200,245,100,.12) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(100,212,245,.10) 0%,transparent 40%)}
+.profile-wrap{max-width:1100px;margin:0 auto;padding:0 32px}
+.avatar-wrap{position:relative;display:inline-block;margin-top:-64px;margin-bottom:16px}
+.avatar-ring{position:absolute;inset:-6px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:.35;z-index:1}
+.profile-avatar{width:128px;height:128px;border-radius:50%;border:4px solid var(--bg);background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:700;color:#000;position:relative;z-index:2}
+.profile-meta{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:24px}
+.profile-name{font-size:24px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.verified-badge{color:var(--accent2)}
+.verified-badge svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.profile-handle{font-size:14px;color:var(--muted);margin-bottom:8px;font-family:var(--font-mono)}
+.profile-bio{font-size:14px;color:rgba(255,255,255,.7);line-height:1.6;max-width:480px}
+.profile-location{font-size:13px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:5px}
+.profile-location svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+.stats-bar{display:flex;gap:32px;padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:32px;flex-wrap:wrap}
+.videos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.video-card{border-radius:var(--radius-md);overflow:hidden;cursor:pointer;position:relative;aspect-ratio:9/16;background:var(--surface2);border:1px solid var(--border);transition:transform .2s,border-color .2s}
+.video-card:hover{transform:scale(1.02);border-color:rgba(200,245,100,.3)}
+.video-card:hover .card-actions{opacity:1}
+.video-thumb{width:100%;height:100%;object-fit:cover;display:block}
+.video-thumb-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--surface3);color:var(--muted)}
+.video-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.9) 0%,transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:10px}
+.video-card-title{font-size:12px;font-weight:600;line-height:1.4;margin-bottom:3px}
+.video-card-views{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.card-actions{position:absolute;top:8px;left:8px;display:flex;gap:4px;opacity:0;transition:opacity .2s;z-index:5}
+.card-del-btn{width:28px;height:28px;border-radius:6px;background:rgba(245,100,100,.85);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;transition:background .2s}
+.card-del-btn:hover{background:var(--danger)}
+.card-del-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.vis-tag{position:absolute;top:8px;right:8px;font-size:10px;padding:2px 7px;border-radius:var(--radius-full)}
+.edit-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(12px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.edit-modal-overlay.show{display:flex}
+.edit-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;max-width:420px;width:100%}
+.del-confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:300;display:none;align-items:center;justify-content:center}
+.del-confirm-overlay.show{display:flex}
+.del-confirm-box{background:var(--surface);border:1px solid rgba(245,100,100,.3);border-radius:var(--radius-xl);padding:32px;max-width:360px;width:100%;text-align:center}
+@media(max-width:768px){.profile-wrap{padding:0 16px}.videos-grid{grid-template-columns:repeat(2,1fr)}.stats-bar{gap:20px}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="/index.html" class="nav-logo">بصير</a>
+  <div class="nav-links">
+    <a href="/index.html" class="btn"><i data-lucide="arrow-right"></i> الرئيسية</a>
+    <a href="/search.html" class="btn"><i data-lucide="search"></i> بحث</a>
+    <a href="/upload.html" class="btn btn-primary"><i data-lucide="upload"></i> رفع مقطع</a>
+    <button class="btn btn-secondary" onclick="API.logout()"><i data-lucide="log-out"></i></button>
+    <a href="/admin.html" class="btn btn-secondary" id="adminLink" style="display:none">
+      <i data-lucide="shield"></i> لوحة التحكم
+    </a>
+  </div>
+</nav>
+
+<div class="cover"><div class="cover-glow"></div></div>
+
+<div class="profile-wrap">
+  <div class="avatar-wrap">
+    <div class="avatar-ring"></div>
+    <div class="profile-avatar" id="profileAvatar">أ</div>
+  </div>
+
+  <div class="profile-meta">
+    <div>
+      <div class="profile-name" id="profileName">
+        جاري التحميل...
+        <span class="verified-badge" id="verifiedBadge" style="display:none">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </span>
+      </div>
+      <div class="profile-handle" id="profileHandle">@...</div>
+      <div class="profile-bio" id="profileBio"></div>
+      <div class="profile-location" id="profileLocation" style="display:none">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span id="profileLocationText"></span>
+      </div>
+    </div>
+    <div class="flex gap-8 mt-8">
+      <button class="btn btn-secondary btn-lg" onclick="openEditModal()"><i data-lucide="pencil"></i> تعديل الملف</button>
+      <button class="btn btn-icon btn-secondary" onclick="shareProfile()"><i data-lucide="share-2"></i></button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num" id="statVideos">0</div><div class="stat-label">مقطع</div></div>
+    <div class="stat-item"><div class="stat-num" id="statFollowers">0</div><div class="stat-label">متابع</div></div>
+    <div class="stat-item"><div class="stat-num" id="statFollowing">0</div><div class="stat-label">يتابع</div></div>
+    <div class="stat-item"><div class="stat-num" id="statViews">0</div><div class="stat-label">مشاهدة</div></div>
+    <div class="stat-item"><div class="stat-num" id="statLikes">0</div><div class="stat-label">إعجاب</div></div>
+  </div>
+
+  <div class="tabs mb-24">
+    <button class="tab active" onclick="switchTab(this,'videos')"><i data-lucide="play"></i> مقاطعي</button>
+    <button class="tab" onclick="switchTab(this,'saved')"><i data-lucide="bookmark"></i> المحفوظات</button>
+  </div>
+
+  <div id="tab-videos">
+    <div class="videos-grid" id="videosGrid">
+      <div class="text-muted text-sm" style="padding:20px">جاري تحميل المقاطع...</div>
+    </div>
+  </div>
+  <div id="tab-saved" style="display:none">
+    <div class="videos-grid" id="savedGrid">
+      <div class="text-muted text-sm" style="padding:20px">جاري تحميل المحفوظات...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="edit-modal-overlay" id="editModal">
+  <div class="edit-modal-box">
+    <div class="flex-between mb-24">
+      <div class="card-title">تعديل الملف الشخصي</div>
+      <button class="btn btn-icon btn-ghost" onclick="closeEditModal()"><i data-lucide="x"></i></button>
+    </div>
+    <div class="field"><label class="field-label">الاسم</label><input class="field-input" id="editName" type="text"></div>
+    <div class="field"><label class="field-label">نبذة عني</label><textarea class="field-textarea" id="editBio" placeholder="اكتب نبذة عنك..."></textarea></div>
+    <div class="field"><label class="field-label">الموقع</label><input class="field-input" id="editLocation" type="text" placeholder="المدينة، الدولة"></div>
+    <button class="btn btn-primary btn-full" id="saveEditBtn" onclick="saveProfile()"><i data-lucide="check"></i> حفظ التغييرات</button>
+  </div>
+</div>
+
+<!-- Delete Confirm -->
+<div class="del-confirm-overlay" id="delConfirm">
+  <div class="del-confirm-box">
+    <div style="color:var(--danger);margin-bottom:16px;display:flex;justify-content:center">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </div>
+    <div class="card-title mb-8">حذف الفيديو</div>
+    <div class="text-muted text-sm mb-24">هذا الإجراء لا يمكن التراجع عنه. سيُحذف الفيديو نهائياً من Cloudinary.</div>
+    <div class="flex gap-8">
+      <button class="btn btn-full" onclick="closeDelConfirm()">إلغاء</button>
+      <button class="btn btn-danger btn-full" id="confirmDelBtn" onclick="confirmDelete()">نعم، احذف</button>
+    </div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+let profileData = null, pendingDeleteId = null;
+
+window.addEventListener('load', async () => {
+  lucide.createIcons();
+  if (!UI.requireAuth()) return;
+  // إظهار رابط لوحة التحكم للمشرفين
+  const _u = API.user();
+  if (_u?.is_admin) {
+    const al = document.getElementById('adminLink');
+    if (al) al.style.display = 'inline-flex';
+  }
+  await loadProfile();
+  await loadVideos();
+});
+
+async function loadProfile() {
+  try {
+    // ✅ إصلاح: نجلب البيانات الحديثة دائماً من السيرفر
+    const user = await API.auth.me();
+    profileData = user;
+
+    document.getElementById('profileAvatar').textContent = user.name?.[0] || 'أ';
+    document.getElementById('profileName').childNodes[0].textContent = user.name + ' ';
+    document.getElementById('profileHandle').textContent = user.handle;
+    document.getElementById('profileBio').textContent = user.bio || '';
+    if (user.verified) document.getElementById('verifiedBadge').style.display = 'inline-flex';
+    if (user.location) {
+      document.getElementById('profileLocationText').textContent = user.location;
+      document.getElementById('profileLocation').style.display = 'flex';
+    }
+
+    // ✅ إصلاح: نستخدم handle من السيرفر مباشرة
+    const rawHandle = user.handle.startsWith('@') ? user.handle.slice(1) : user.handle;
+    const profile = await API.users.profile(rawHandle);
+    document.getElementById('statVideos').textContent    = UI.formatNum(profile.videos_count    || 0);
+    document.getElementById('statFollowers').textContent = UI.formatNum(profile.followers_count || 0);
+    document.getElementById('statFollowing').textContent = UI.formatNum(profile.following_count || 0);
+    document.getElementById('statViews').textContent     = UI.formatNum(profile.total_views     || 0);
+    document.getElementById('statLikes').textContent     = UI.formatNum(profile.total_likes     || 0);
+
+    // ✅ تحديث localStorage بأحدث البيانات
+    API.updateLocalUser({ name: user.name, handle: user.handle, verified: user.verified, is_admin: user.is_admin });
+  } catch (err) {
+    console.error('[loadProfile]', err);
+  }
+}
+
+async function loadVideos() {
+  try {
+    // ✅ إصلاح: نجلب الـ handle من السيرفر وليس localStorage
+    const user   = await API.auth.me();
+    const handle = user.handle.startsWith('@') ? user.handle.slice(1) : user.handle;
+    const videos = await API.users.videos(handle);
+    renderGrid('videosGrid', videos, true);
+  } catch (err) {
+    document.getElementById('videosGrid').innerHTML = '<div class="text-muted text-sm">فشل تحميل المقاطع</div>';
+  }
+}
+
+async function loadSaved() {
+  try {
+    const videos = await API.users.saved();
+    renderGrid('savedGrid', videos, false);
+  } catch (err) {
+    document.getElementById('savedGrid').innerHTML = '<div class="text-muted text-sm">لا توجد محفوظات</div>';
+  }
+}
+
+function renderGrid(containerId, videos, canDelete) {
+  const el = document.getElementById(containerId);
+  if (!videos || !videos.length) {
+    el.innerHTML = `<div class="empty-state">
+      <div class="empty-state-title">لا توجد مقاطع بعد</div>
+      <a href="/upload.html" class="btn btn-primary mt-8">ارفع أول مقطع</a>
+    </div>`;
+    return;
+  }
+  el.innerHTML = videos.map(v => `
+    <div class="video-card">
+      ${v.thumbnail_url
+        ? `<img class="video-thumb" src="${v.thumbnail_url}" loading="lazy" onclick="playVideo('${v.id}')">`
+        : `<div class="video-thumb-placeholder" onclick="playVideo('${v.id}')"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></div>`}
+      <div class="video-overlay" onclick="playVideo('${v.id}')">
+        <div class="video-card-title">${v.title}</div>
+        <div class="video-card-views">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          ${UI.formatNum(v.views)}
+        </div>
+      </div>
+      ${v.visibility === 'private' ? `<span class="badge badge-muted vis-tag">خاص</span>` : ''}
+      ${v.visibility === 'followers' ? `<span class="badge badge-blue vis-tag">للمتابعين</span>` : ''}
+      ${canDelete ? `<div class="card-actions">
+        <button class="card-del-btn" onclick="askDelete('${v.id}',event)" title="حذف الفيديو">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+      </div>` : ''}
+    </div>`).join('');
+}
+
+// ✅ فتح الفيديو في الخلاصة — تمرير ID في URL
+function playVideo(id) {
+  window.location.href = `/index.html?vid=${id}`;
+}
+
+function askDelete(id, event) {
+  event.stopPropagation();
+  pendingDeleteId = id;
+  document.getElementById('delConfirm').classList.add('show');
+}
+function closeDelConfirm() {
+  pendingDeleteId = null;
+  document.getElementById('delConfirm').classList.remove('show');
+}
+async function confirmDelete() {
+  if (!pendingDeleteId) return;
+  const btn = document.getElementById('confirmDelBtn');
+  btn.disabled = true; btn.textContent = 'جاري الحذف...';
+  try {
+    await API.videos.delete(pendingDeleteId);
+    closeDelConfirm();
+    UI.success('تم حذف الفيديو');
+    await loadVideos();
+    await loadProfile();
+  } catch(e) {
+    UI.error(e.message);
+    btn.disabled = false; btn.textContent = 'نعم، احذف';
+  }
+}
+
+function switchTab(el, tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-videos').style.display = tab === 'videos' ? 'block' : 'none';
+  document.getElementById('tab-saved').style.display  = tab === 'saved'  ? 'block' : 'none';
+  if (tab === 'saved') loadSaved();
+}
+
+function openEditModal() {
+  if (!profileData) return;
+  document.getElementById('editName').value     = profileData.name     || '';
+  document.getElementById('editBio').value      = profileData.bio      || '';
+  document.getElementById('editLocation').value = profileData.location || '';
+  document.getElementById('editModal').classList.add('show');
+  lucide.createIcons();
+}
+function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
+
+async function saveProfile() {
+  const btn = document.getElementById('saveEditBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> جاري الحفظ...';
+  try {
+    const updates = {
+      name:     document.getElementById('editName').value.trim(),
+      bio:      document.getElementById('editBio').value.trim(),
+      location: document.getElementById('editLocation').value.trim(),
+    };
+    await API.users.update(updates); // ✅ يُحدِّث localStorage تلقائياً
+    closeEditModal();
+    UI.success('تم تحديث الملف الشخصي');
+    profileData = { ...profileData, ...updates };
+    await loadProfile();
+  } catch(e) { UI.error(e.message); }
+  finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="check"></i> حفظ التغييرات';
+    lucide.createIcons({ nodes: [btn] });
+  }
+}
+
+function shareProfile() {
+  navigator.clipboard?.writeText(location.origin + '/profile.html').then(() => UI.success('تم نسخ الرابط'));
+}
+</script>
+
+<!-- ── Bottom Navigation (Mobile) ────────────────────────────────────────── -->
+<style>
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:calc(60px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(8,8,8,.95);border-top:1px solid var(--border);backdrop-filter:blur(20px);z-index:50;justify-content:space-around;align-items:center}
+.bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:10px;font-family:var(--font-main);font-weight:500;transition:color .2s;flex:1;text-decoration:none}
+.bottom-nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav-item.active,.bottom-nav-item:hover{color:var(--accent)}
+.bottom-nav-upload-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;text-decoration:none}
+.bottom-nav-upload{width:44px;height:44px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.bottom-nav-upload svg{width:22px;height:22px;stroke:#000;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.bn-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000}
+@media(max-width:600px){
+  .bottom-nav{display:flex}
+  body{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+}
+</style>
+<nav class="bottom-nav">
+  <a href="/index.html" class="bottom-nav-item ">
+    <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    الرئيسية
+  </a>
+  <a href="/search.html" class="bottom-nav-item ">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    بحث
+  </a>
+  <a href="/upload.html" class="bottom-nav-upload-wrap">
+    <div class="bottom-nav-upload">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    </div>
+  </a>
+  <a href="/profile.html" class="bottom-nav-item active">
+    <div class="bn-avatar" id="bnAvatar_profile">أ</div>
+    حسابي
+  </a>
+</nav>
+<script>
+(function(){
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  var u = JSON.parse(localStorage.getItem('baseer_user')||'null');
+  var el = document.getElementById('bnAvatar_profile');
+  if(el && u) el.textContent = u.name?.[0]||'أ';
+})();
+</script>
+
+</body>
+</html>
