@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <script>
+    // Prevent Flash of Wrong Theme
+    (function(){
+      var t = localStorage.getItem('wasl_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.style.colorScheme = t;
+      if (t === 'light') {
+        document.documentElement.classList.add('light-pre');
+      }
+    })();
+  </script>
+  <style>
+    /* Applied immediately before CSS loads */
+    html:not(.light-pre) body { background: #0d0f14; color: #f1f5f9; }
+    html.light-pre body { background: #f8fafc; color: #0f172a; }
+  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="الملف الشخصي — وَصْل" />
+  <title>الملف الشخصي — وَصْل</title>
+    <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/logo.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared-pages.css" />
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2326556370802000" crossorigin="anonymous"></script>
+  <meta name="google-site-verification" content="QGKK3I4G_T6kbsOGlT4k7MOzsUIPkgCvfBqqbsM2Mdk" />
+  <style>
+    .profile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 580px;
+      margin: 0 auto 32px;
+      position: relative;
+    }
+
+    .profile-cover {
+      height: 120px;
+      background: linear-gradient(135deg, #1d4ed840, #7c3aed40);
+      border-radius: 16px 16px 0 0;
+      margin: -40px -40px 0;
+      margin-bottom: 0;
+    }
+
+    .profile-avatar-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      margin-top: -40px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .profile-avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: 4px solid var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 700;
+      color: #fff;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px #00000040;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .profile-names { flex: 1; padding-bottom: 6px; }
+
+    .profile-username {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .verified-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #4A90E218;
+      border: 1px solid #4A90E240;
+      border-radius: 999px;
+      color: #4A90E2;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 12px;
+    }
+
+    .admin-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #f59e0b18;
+      border: 1px solid #f59e0b40;
+      border-radius: 999px;
+      color: #f59e0b;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 12px;
+    }
+
+    .profile-bio {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin: 14px 0;
+      padding: 14px;
+      background: var(--bg-hover);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      min-height: 52px;
+    }
+
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .profile-stat {
+      text-align: center;
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 8px;
+    }
+
+    .profile-stat-num { font-size: 20px; font-weight: 700; color: var(--accent); }
+    .profile-stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+    .profile-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-edit {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 24px;
+      transition: all .2s;
+      flex: 1;
+    }
+
+    .btn-edit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
+
+    .btn-chat {
+      background: var(--bg-hover);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 24px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .2s;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .btn-chat:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Edit Panel ── */
+    .edit-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      max-width: 580px;
+      margin: 0 auto 24px;
+      display: none;
+    }
+
+    .edit-panel.open { display: block; animation: fadeInUp 0.3s ease; }
+
+    .edit-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .edit-form { display: flex; flex-direction: column; gap: 16px; }
+
+    .edit-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .edit-input, .edit-textarea {
+      width: 100%;
+      background: var(--bg-hover);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: all .2s;
+      text-align: right;
+    }
+
+    .edit-input:focus, .edit-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .edit-textarea { min-height: 90px; resize: vertical; }
+
+    .avatar-preview {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      overflow: hidden;
+      border: 3px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    .avatar-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+    .save-success {
+      background: #22c55e18;
+      border: 1px solid #22c55e30;
+      border-radius: 8px;
+      color: #22c55e;
+      font-size: 13px;
+      padding: 10px 14px;
+      text-align: center;
+      display: none;
+    }
+
+    /* ── Not logged in state ── */
+    .not-logged {
+      text-align: center;
+      padding: 60px 24px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .not-logged .icon { font-size: 56px; margin-bottom: 16px; }
+    .not-logged h2 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+    .not-logged p  { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+    @media (max-width: 600px) {
+      .profile-card { padding: 28px 20px; }
+      .profile-cover { margin: -28px -20px 0; }
+      .profile-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body class="dark-mode">
+<script src="shared.js"></script>
+
+<div class="page-wrap">
+
+  <!-- Not Logged In -->
+  <div class="not-logged" id="not-logged-state" style="display:none">
+    <div class="icon">🔒</div>
+    <h2>سجّل دخولك أولاً</h2>
+    <p>يجب تسجيل الدخول لعرض الملف الشخصي</p>
+    <a href="/index.html" style="background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:none;border-radius:12px;font-family:var(--font);font-size:15px;font-weight:600;padding:13px 32px;text-decoration:none;display:inline-block">💬 تسجيل الدخول</a>
+  </div>
+
+  <!-- Profile Card -->
+  <div id="profile-main" style="display:none">
+
+    <div class="breadcrumb">
+      <a href="/home.html">الرئيسية</a><span>/</span><span>الملف الشخصي</span>
+    </div>
+
+    <div class="profile-card">
+      <div class="profile-cover"></div>
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar" id="p-avatar-display">؟</div>
+        <div class="profile-names">
+          <div class="profile-username" id="p-username-display">
+            جاري التحميل...
+          </div>
+          <div id="p-badges" style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"></div>
+        </div>
+      </div>
+
+      <div class="profile-bio" id="p-bio-display">لا توجد نبذة بعد...</div>
+
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-num" id="p-stat-rooms">—</div>
+          <div class="profile-stat-lbl">رسالة أُرسلت</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-num" id="p-stat-status">—</div>
+          <div class="profile-stat-lbl">تاريخ الانضمام</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-num">وَصْل</div>
+          <div class="profile-stat-lbl">المنصة</div>
+        </div>
+      </div>
+      <div id="p-last-seen" style="font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center"></div>
+
+      <div class="profile-actions" id="p-actions"></div>
+    </div>
+
+    <!-- Change Password Panel -->
+    <div class="edit-panel" id="pwd-panel" style="display:none">
+      <div class="edit-title">🔑 تغيير كلمة المرور</div>
+      <div class="edit-form">
+        <div>
+          <label class="edit-label">كلمة المرور الحالية</label>
+          <input type="password" class="edit-input" id="pwd-old" placeholder="كلمة المرور الحالية..." />
+        </div>
+        <div>
+          <label class="edit-label">كلمة المرور الجديدة</label>
+          <input type="password" class="edit-input" id="pwd-new" placeholder="4 أحرف على الأقل..." />
+        </div>
+        <div>
+          <label class="edit-label">تأكيد كلمة المرور الجديدة</label>
+          <input type="password" class="edit-input" id="pwd-confirm" placeholder="أعد كتابة كلمة المرور..." />
+        </div>
+        <div id="pwd-error" class="save-success" style="background:#ef444415;border-color:#ef444430;color:#ef4444;display:none"></div>
+        <div id="pwd-success" class="save-success"></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-edit" onclick="submitChangePwd()">💾 تغيير كلمة المرور</button>
+          <button onclick="toggleChangePwd()" style="background:var(--bg-hover);border:1.5px solid var(--border);border-radius:10px;color:var(--text-secondary);cursor:pointer;font-family:var(--font);font-size:14px;padding:10px 20px">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Panel -->
+    <div class="edit-panel" id="edit-panel">
+      <div class="edit-title">✏️ تعديل الملف الشخصي</div>
+      <div class="edit-form">
+
+        <!-- Avatar Preview -->
+        <div>
+          <label class="edit-label">معاينة الصورة الشخصية</label>
+          <div class="avatar-preview" id="edit-avatar-preview">؟</div>
+        </div>
+
+        <!-- Avatar URL -->
+        <div>
+          <label class="edit-label">رابط الصورة الشخصية (URL)</label>
+          <input type="url" class="edit-input" id="edit-avatar-url" placeholder="https://example.com/avatar.jpg" />
+          <p style="font-size:11px;color:var(--text-muted);margin-top:5px">أو ارفع صورة من جهازك:</p>
+          <input type="file" id="edit-avatar-file" accept="image/*" style="font-size:12px;color:var(--text-secondary);margin-top:4px" />
+        </div>
+
+        <!-- Bio -->
+        <div>
+          <label class="edit-label">النبذة الشخصية (200 حرف كحد أقصى)</label>
+          <textarea class="edit-textarea" id="edit-bio" maxlength="200" placeholder="اكتب نبذة عنك..."></textarea>
+          <div style="font-size:11px;color:var(--text-muted);text-align:left;margin-top:3px"><span id="bio-count">0</span>/200</div>
+        </div>
+
+        <div id="save-success" class="save-success">✅ تم حفظ التغييرات بنجاح!</div>
+
+        <div style="display:flex;gap:10px">
+          <button class="btn-edit" onclick="saveProfile()">💾 حفظ التغييرات</button>
+          <button onclick="toggleEdit(false)" style="background:var(--bg-hover);border:1.5px solid var(--border);border-radius:10px;color:var(--text-secondary);cursor:pointer;font-family:var(--font);font-size:14px;padding:10px 20px;transition:all .2s">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const WASL_USER = (() => {
+  try { return JSON.parse(localStorage.getItem('wasl_user') || '{}'); } catch { return {}; }
+})();
+
+const viewUsername = new URLSearchParams(location.search).get('u') || WASL_USER.username || '';
+const isMyProfile  = viewUsername === WASL_USER.username;
+
+let profileData = null;
+
+async function loadProfile() {
+  if (!viewUsername) {
+    document.getElementById('not-logged-state').style.display = 'block';
+    return;
+  }
+
+  try {
+    const res  = await fetch(`/api/profile/${encodeURIComponent(viewUsername)}`);
+    const data = await res.json();
+    if (!res.ok) { document.getElementById('not-logged-state').style.display = 'block'; return; }
+
+    profileData = data;
+    renderProfile(data);
+    document.getElementById('profile-main').style.display = 'block';
+  } catch(e) {
+    document.getElementById('not-logged-state').style.display = 'block';
+  }
+}
+
+function renderProfile(data) {
+  // Avatar
+  const avEl = document.getElementById('p-avatar-display');
+  if (data.avatar) {
+    avEl.innerHTML = `<img src="${esc(data.avatar)}" alt="${esc(viewUsername)}" />`;
+  } else {
+    avEl.textContent = viewUsername.charAt(0).toUpperCase();
+  }
+
+  // Username + badges
+  document.getElementById('p-username-display').textContent = viewUsername;
+  const badges = document.getElementById('p-badges');
+  badges.innerHTML = '';
+  if (data.verified) badges.innerHTML += `<span class="verified-pill"><svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="#4A90E2"/><polyline points="4.5,8.2 6.8,10.5 11.5,5.5" stroke="#FFFFF0" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>موثق</span>`;
+  if (data.isAdmin)  badges.innerHTML += `<span class="admin-pill">⚡ مدير المنصة</span>`;
+
+  // Bio
+  const bioEl = document.getElementById('p-bio-display');
+  bioEl.textContent = data.bio || 'لا توجد نبذة بعد...';
+  bioEl.style.color = data.bio ? 'var(--text-secondary)' : 'var(--text-muted)';
+
+  // Stats — real data from API
+  const statRooms  = document.getElementById('p-stat-rooms');
+  const statStatus = document.getElementById('p-stat-status');
+  if (statRooms)  statRooms.textContent  = data.msgCount != null ? data.msgCount.toLocaleString('ar-EG') : '—';
+  if (statStatus) statStatus.textContent = data.joinedAt
+    ? new Date(data.joinedAt).toLocaleDateString('ar-EG', { month:'short', year:'numeric' })
+    : '—';
+
+  // Update stat labels
+  const statLabels = document.querySelectorAll('.profile-stat-lbl');
+  if (statLabels[0]) statLabels[0].textContent = 'رسالة أُرسلت';
+  if (statLabels[1]) statLabels[1].textContent = 'تاريخ الانضمام';
+
+  // Last seen
+  if (data.lastSeen) {
+    const ls = new Date(data.lastSeen).toLocaleString('ar-EG',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    const lsEl = document.getElementById('p-last-seen');
+    if (lsEl) lsEl.textContent = 'آخر ظهور: ' + ls;
+  }
+
+  // Actions
+  const actions = document.getElementById('p-actions');
+  actions.innerHTML = '';
+  if (isMyProfile) {
+    actions.innerHTML = `
+      <button class="btn-edit" onclick="toggleEdit(true)">✏️ تعديل الملف</button>
+      <a href="/index.html" class="btn-chat">💬 الدردشة</a>
+      <button onclick="toggleChangePwd()" style="background:var(--bg-hover);border:1.5px solid var(--border);border-radius:10px;color:var(--text-primary);cursor:pointer;font-family:var(--font);font-size:13px;padding:9px 16px;transition:all .2s;width:100%;margin-top:6px">🔑 تغيير كلمة المرور</button>`;
+    document.getElementById('edit-avatar-url').value = data.avatar || '';
+    document.getElementById('edit-bio').value         = data.bio    || '';
+    updateBioCount();
+    updateAvatarPreview(data.avatar || '');
+  } else {
+    actions.innerHTML = `<a href="/index.html" class="btn-chat">💬 فتح الدردشة</a>`;
+  }
+}
+
+function toggleEdit(open) {
+  const panel = document.getElementById('edit-panel');
+  panel.classList.toggle('open', open);
+  if (open) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function updateAvatarPreview(url) {
+  const prev = document.getElementById('edit-avatar-preview');
+  if (url) {
+    prev.innerHTML = `<img src="${esc(url)}" alt="preview" onerror="this.parentElement.textContent='؟'" />`;
+  } else {
+    prev.textContent = (WASL_USER.username || '؟').charAt(0).toUpperCase();
+  }
+}
+
+function updateBioCount() {
+  const len = document.getElementById('edit-bio').value.length;
+  document.getElementById('bio-count').textContent = len;
+}
+
+document.getElementById('edit-bio').addEventListener('input', updateBioCount);
+
+document.getElementById('edit-avatar-url').addEventListener('input', function() {
+  updateAvatarPreview(this.value.trim());
+});
+
+// Avatar file upload
+document.getElementById('edit-avatar-file').addEventListener('change', async function() {
+  const file = this.files[0];
+  if (!file) return;
+  const formData = new FormData();
+  formData.append('file', file);
+  try {
+    const res  = await fetch('/upload', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.url) {
+      document.getElementById('edit-avatar-url').value = data.url;
+      updateAvatarPreview(data.url);
+    }
+  } catch { alert('فشل رفع الصورة'); }
+  this.value = '';
+});
+
+async function saveProfile() {
+  const avatar = document.getElementById('edit-avatar-url').value.trim();
+  const bio    = document.getElementById('edit-bio').value.trim();
+
+  try {
+    const res  = await fetch('/api/profile/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: WASL_USER.username, avatar, bio })
+    });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || 'فشل الحفظ'); return; }
+
+    // Show success
+    const succ = document.getElementById('save-success');
+    succ.style.display = 'block';
+    setTimeout(() => succ.style.display = 'none', 3000);
+
+    // Update display
+    profileData.avatar = data.avatar;
+    profileData.bio    = data.bio;
+    renderProfile(profileData);
+    toggleEdit(false);
+  } catch { alert('خطأ في الاتصال'); }
+}
+
+
+function toggleChangePwd() {
+  const panel = document.getElementById('pwd-panel');
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) {
+    document.getElementById('pwd-old').value     = '';
+    document.getElementById('pwd-new').value     = '';
+    document.getElementById('pwd-confirm').value = '';
+    document.getElementById('pwd-error').style.display   = 'none';
+    document.getElementById('pwd-success').style.display = 'none';
+    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+}
+
+async function submitChangePwd() {
+  const oldPwd  = document.getElementById('pwd-old').value;
+  const newPwd  = document.getElementById('pwd-new').value;
+  const confirm = document.getElementById('pwd-confirm').value;
+  const errEl   = document.getElementById('pwd-error');
+  const succEl  = document.getElementById('pwd-success');
+
+  errEl.style.display  = 'none';
+  succEl.style.display = 'none';
+
+  if (!oldPwd || !newPwd || !confirm) { errEl.textContent='أدخل جميع الحقول'; errEl.style.display='block'; return; }
+  if (newPwd.length < 4)             { errEl.textContent='كلمة المرور الجديدة قصيرة جداً'; errEl.style.display='block'; return; }
+  if (newPwd !== confirm)            { errEl.textContent='كلمة المرور الجديدة غير متطابقة'; errEl.style.display='block'; return; }
+
+  try {
+    const res  = await fetch('/api/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: WASL_USER.username, oldPassword: oldPwd, newPassword: newPwd })
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || 'فشل التغيير'; errEl.style.display='block'; return; }
+    succEl.textContent  = '✅ تم تغيير كلمة المرور بنجاح!';
+    succEl.style.display = 'block';
+    document.getElementById('pwd-old').value     = '';
+    document.getElementById('pwd-new').value     = '';
+    document.getElementById('pwd-confirm').value = '';
+    setTimeout(() => toggleChangePwd(), 2500);
+  } catch { errEl.textContent='خطأ في الاتصال بالسيرفر'; errEl.style.display='block'; }
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+loadProfile();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(r => console.log('[PWA] SW:', r.scope))
+      .catch(e => console.warn('[PWA] SW failed:', e));
+  });
+}
+window.addEventListener('offline', () => {
+  const bar = document.createElement('div');
+  bar.id = 'offline-bar';
+  bar.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ef4444;color:#fff;text-align:center;padding:8px;font-family:Tajawal,sans-serif;font-size:13px;font-weight:600;z-index:9999;direction:rtl';
+  bar.textContent = '📡 لا يوجد اتصال بالإنترنت';
+  document.body.prepend(bar);
+});
+window.addEventListener('online', () => {
+  document.getElementById('offline-bar')?.remove();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>بصير — رفع مقطع</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="بصير">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+.upload-grid{display:grid;grid-template-columns:1fr 390px;gap:24px;align-items:start}
+.dropzone{border:2px dashed rgba(200,245,100,.22);border-radius:var(--radius-lg);background:rgba(200,245,100,.02);min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;text-align:center;padding:40px 24px}
+.dropzone:hover,.dropzone.drag{border-color:rgba(200,245,100,.55);background:rgba(200,245,100,.06)}
+.dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-icon{color:var(--accent);opacity:.7}
+.dz-icon svg{width:52px;height:52px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.dz-title{font-size:18px;font-weight:700}
+.dz-sub{font-size:13px;color:var(--muted);line-height:1.7}
+.dz-formats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.preview-box{border-radius:var(--radius-lg);overflow:hidden;background:#000;border:1px solid var(--border);display:none;position:relative;margin-top:16px;aspect-ratio:9/16;max-height:400px}
+.preview-video{width:100%;height:100%;object-fit:cover;display:block}
+.preview-badge{position:absolute;top:12px;right:12px;display:none}
+.upload-progress{display:none;margin-top:16px}
+.prog-bar-wrap{height:6px;background:var(--surface3);border-radius:6px;overflow:hidden;margin-bottom:8px}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:6px;width:0%;transition:width .3s}
+.prog-text{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+.tags-input-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;display:flex;flex-wrap:wrap;gap:6px;cursor:text;transition:border-color .2s;min-height:44px}
+.tags-input-wrap:focus-within{border-color:rgba(200,245,100,.4)}
+.tag-pill{background:rgba(200,245,100,.1);border:1px solid rgba(200,245,100,.25);color:var(--accent);font-size:12px;padding:3px 10px;border-radius:var(--radius-full);display:flex;align-items:center;gap:5px}
+.tag-remove{cursor:pointer;opacity:.55;transition:opacity .2s;display:flex;align-items:center}
+.tag-remove:hover{opacity:1}
+.tag-remove svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round}
+.tag-input-field{border:none;background:transparent;color:var(--text);font-size:13px;outline:none;font-family:var(--font-main);min-width:80px;flex:1}
+.tips-card{background:rgba(100,212,245,.04);border:1px solid rgba(100,212,245,.14);border-radius:var(--radius-md);padding:16px 18px;margin-top:20px}
+.tips-title{font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.tips-title svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+.tip-item{font-size:12px;color:var(--muted);line-height:1.9;display:flex;align-items:flex-start;gap:8px}
+.tip-item svg{width:13px;height:13px;stroke:var(--accent2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-top:3px;flex-shrink:0}
+.auth-notice{background:rgba(100,212,245,.06);border:1px solid rgba(100,212,245,.2);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:24px;font-size:13px;color:var(--accent2);display:none;align-items:center;gap:10px}
+.auth-notice.show{display:flex}
+.auth-notice svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+.form-section-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.form-section-title svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:900px){.upload-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a href="/" class="nav-logo">بصير</a>
+  <div class="nav-links">
+    <a href="/" class="btn"><i data-lucide="arrow-right"></i> العودة</a>
+    <a href="/profile.html" class="btn btn-secondary"><i data-lucide="user"></i> حسابي</a>
+    <button class="btn btn-primary" onclick="submitUpload()"><i data-lucide="send"></i> نشر المقطع</button>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-title">رفع مقطع جديد</div>
+  <div class="page-sub">شارك لحظاتك البصرية — يُرفع مباشرة على Cloudinary ويظهر للجميع فوراً</div>
+
+  <div class="auth-notice" id="authNotice">
+    <i data-lucide="info"></i>
+    يجب تسجيل الدخول لرفع مقطع.
+    <a href="/login.html" style="color:var(--accent);margin-right:6px;font-weight:600">سجّل الدخول الآن</a>
+  </div>
+
+  <div class="upload-grid">
+    <!-- Drop zone -->
+    <div>
+      <div class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept="video/mp4,video/quicktime,video/webm,video/avi" onchange="handleFile(this)">
+        <div class="dz-icon" id="dzIcon"><i data-lucide="film"></i></div>
+        <div class="dz-title" id="dzTitle">اسحب الفيديو هنا</div>
+        <div class="dz-sub" id="dzSub">أو انقر لاختيار ملف<br>الحد الأقصى 500 ميغابايت</div>
+        <div class="dz-formats">
+          <span class="badge badge-muted">MP4</span>
+          <span class="badge badge-muted">MOV</span>
+          <span class="badge badge-muted">WEBM</span>
+          <span class="badge badge-muted">AVI</span>
+        </div>
+      </div>
+
+      <div class="preview-box" id="previewBox">
+        <video class="preview-video" id="previewVideo" controls muted loop playsinline></video>
+        <span class="badge badge-accent preview-badge" id="previewBadge">معاينة محلية</span>
+      </div>
+
+      <div class="tips-card">
+        <div class="tips-title"><i data-lucide="zap"></i> نصائح للمقاطع المميزة</div>
+        <div class="tip-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> الفيديو الرأسي 9:16 يعطي أفضل تجربة مشاهدة</div>
+        <div class="tip-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> المدة المثالية من 15 إلى 60 ثانية</div>
+        <div class="tip-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> الإضاءة الجيدة تُضاعف المشاهدات</div>
+        <div class="tip-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> الرفع مباشر على السحابة — يظهر للجميع فوراً</div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="card">
+      <div class="form-section-title"><i data-lucide="type"></i> معلومات المقطع</div>
+
+      <div class="field">
+        <label class="field-label">العنوان</label>
+        <input class="field-input" id="titleInput" type="text"
+          placeholder="أدخل عنواناً جذاباً..." maxlength="80"
+          oninput="updateCount('titleInput','titleCount',80)">
+        <div class="char-count"><span id="titleCount">0</span>/80</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">الوصف</label>
+        <textarea class="field-textarea" id="descInput"
+          placeholder="اكتب وصفاً يجذب المشاهدين..." maxlength="300"
+          oninput="updateCount('descInput','descCount',300)"></textarea>
+        <div class="char-count"><span id="descCount">0</span>/300</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">الفئة</label>
+        <select class="field-select" id="categorySelect">
+          <option value="">— اختر الفئة —</option>
+          <option value="nature">طبيعة</option>
+          <option value="art">فن</option>
+          <option value="arch">عمارة</option>
+          <option value="food">طعام</option>
+          <option value="sea">بحر</option>
+          <option value="city">مدينة</option>
+          <option value="sky">سماء</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field-label">الوسوم</label>
+        <div class="tags-input-wrap" id="tagsWrap" onclick="document.getElementById('tagInput').focus()">
+          <input class="tag-input-field" id="tagInput"
+            placeholder="اكتب وسماً ثم Enter..." onkeydown="handleTag(event)">
+        </div>
+        <div class="field-hint">حتى 8 وسوم · اضغط Enter للإضافة</div>
+      </div>
+
+      <div class="form-section-title" style="margin-top:4px"><i data-lucide="eye"></i> من يمكنه المشاهدة؟</div>
+      <div class="field">
+        <div class="visibility-grid">
+          <div class="vis-option selected" onclick="selectVis(this,'public')">
+            <div class="vis-icon-wrap"><i data-lucide="globe"></i></div>
+            <div class="vis-label">الجميع</div><div class="vis-sub">عام</div>
+          </div>
+          <div class="vis-option" onclick="selectVis(this,'followers')">
+            <div class="vis-icon-wrap"><i data-lucide="users"></i></div>
+            <div class="vis-label">المتابعون</div><div class="vis-sub">فقط</div>
+          </div>
+          <div class="vis-option" onclick="selectVis(this,'private')">
+            <div class="vis-icon-wrap"><i data-lucide="lock"></i></div>
+            <div class="vis-label">خاص</div><div class="vis-sub">أنا فقط</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-progress" id="uploadProgress">
+        <div class="prog-bar-wrap"><div class="prog-bar-fill" id="progFill"></div></div>
+        <div class="prog-text">
+          <span id="progLabel">جاري الرفع على Cloudinary...</span>
+          <span id="progPct">0%</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-full btn-lg mt-16" id="submitBtn" onclick="submitUpload()">
+        <i data-lucide="rocket"></i> نشر المقطع
+      </button>
+      <button class="btn btn-full mt-8" onclick="resetForm()">
+        <i data-lucide="rotate-ccw"></i> إلغاء وبدء من جديد
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-box">
+    <div class="modal-icon" style="color:var(--accent)"><i data-lucide="circle-check-big"></i></div>
+    <div class="modal-title">تم النشر بنجاح! 🎉</div>
+    <div class="modal-sub">مقطعك الآن متاح للجميع على الإنترنت.<br>يمكن مشاهدته من أي مكان في العالم.</div>
+    <a href="/" class="btn btn-primary btn-lg"><i data-lucide="play"></i> شاهد الخلاصة</a>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+let tags = [], selectedFile = null, visibility = 'public';
+
+window.addEventListener('load', () => {
+  lucide.createIcons();
+  if (!API.isLoggedIn()) document.getElementById('authNotice').classList.add('show');
+});
+
+// Drag & drop
+const dz = document.getElementById('dropzone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('video/')) loadPreview(f);
+  else UI.error('يُقبل فقط ملفات الفيديو');
+});
+
+function handleFile(input) {
+  if (input.files[0]) loadPreview(input.files[0]);
+}
+
+function loadPreview(file) {
+  selectedFile = file;
+  const url = URL.createObjectURL(file);
+  const video = document.getElementById('previewVideo');
+  const box   = document.getElementById('previewBox');
+  const badge = document.getElementById('previewBadge');
+
+  video.src = url;
+  box.style.display = 'block';
+  badge.style.display = 'block';
+
+  const t = document.getElementById('titleInput');
+  if (!t.value) {
+    t.value = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+    updateCount('titleInput', 'titleCount', 80);
+  }
+
+  // تحديث منطقة السحب
+  document.getElementById('dzIcon').innerHTML =
+    '<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+  document.getElementById('dzTitle').textContent = file.name;
+  document.getElementById('dzSub').textContent = `${(file.size / 1024 / 1024).toFixed(1)} MB · جاهز للرفع على Cloudinary`;
+}
+
+function updateCount(iid, cid) {
+  document.getElementById(cid).textContent = document.getElementById(iid).value.length;
+}
+
+function handleTag(e) {
+  if ((e.key === 'Enter' || e.key === ',') && e.target.value.trim()) {
+    e.preventDefault();
+    const v = e.target.value.trim().replace(/^#/, '');
+    if (!tags.includes(v) && tags.length < 8) { tags.push(v); renderTags(); }
+    e.target.value = '';
+  }
+  if (e.key === 'Backspace' && !e.target.value && tags.length) { tags.pop(); renderTags(); }
+}
+
+function renderTags() {
+  const wrap = document.getElementById('tagsWrap');
+  const input = document.getElementById('tagInput');
+  wrap.querySelectorAll('.tag-pill').forEach(p => p.remove());
+  tags.forEach(t => {
+    const pill = document.createElement('div');
+    pill.className = 'tag-pill';
+    pill.innerHTML = `#${t} <span class="tag-remove" onclick="removeTag('${t}')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>`;
+    wrap.insertBefore(pill, input);
+  });
+}
+function removeTag(t) { tags = tags.filter(x => x !== t); renderTags(); }
+
+function selectVis(el, v) {
+  visibility = v;
+  document.querySelectorAll('.vis-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+async function submitUpload() {
+  if (!API.isLoggedIn()) { window.location.href = '/login.html'; return; }
+
+  const title = document.getElementById('titleInput').value.trim();
+  const cat   = document.getElementById('categorySelect').value;
+
+  if (!selectedFile) { UI.error('اختر ملف فيديو أولاً'); return; }
+  if (!title)        { flashRed('titleInput'); return; }
+  if (!cat)          { flashRed('categorySelect'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> جاري الرفع...';
+  document.getElementById('uploadProgress').style.display = 'block';
+
+  // شريط تقدم وهمي أثناء الرفع الحقيقي
+  let fakePct = 0;
+  const iv = setInterval(() => {
+    if (fakePct < 90) {
+      fakePct += Math.random() * 2 + 0.5;
+      setProgress(Math.min(fakePct, 90), 'جاري الرفع على Cloudinary...');
+    }
+  }, 300);
+
+  try {
+    const form = new FormData();
+    form.append('video',       selectedFile);
+    form.append('title',       title);
+    form.append('description', document.getElementById('descInput').value);
+    form.append('category',    cat);
+    form.append('tags',        tags.join(','));
+    form.append('visibility',  visibility);
+
+    await API.videos.upload(form);
+
+    clearInterval(iv);
+    setProgress(100, 'اكتمل! ✅');
+
+    setTimeout(() => {
+      document.getElementById('successModal').classList.add('show');
+      lucide.createIcons();
+    }, 500);
+
+  } catch (e) {
+    clearInterval(iv);
+    document.getElementById('uploadProgress').style.display = 'none';
+    UI.error('فشل الرفع: ' + e.message);
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="rocket"></i> نشر المقطع';
+    lucide.createIcons({ nodes: [btn] });
+  }
+}
+
+function setProgress(pct, label) {
+  document.getElementById('progFill').style.width  = pct + '%';
+  document.getElementById('progPct').textContent   = Math.round(pct) + '%';
+  document.getElementById('progLabel').textContent = label;
+}
+
+function flashRed(id) {
+  const el = document.getElementById(id);
+  el.style.borderColor = 'rgba(245,100,100,.6)'; el.focus();
+  setTimeout(() => el.style.borderColor = '', 1500);
+}
+
+function resetForm() {
+  ['titleInput','descInput'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('categorySelect').value = '';
+  tags = []; renderTags(); selectedFile = null;
+  document.getElementById('previewBox').style.display = 'none';
+  document.getElementById('previewVideo').src = '';
+  document.getElementById('uploadProgress').style.display = 'none';
+  document.getElementById('progFill').style.width = '0%';
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  btn.innerHTML = '<i data-lucide="rocket"></i> نشر المقطع';
+  document.getElementById('dzIcon').innerHTML = '<i data-lucide="film"></i>';
+  document.getElementById('dzTitle').textContent = 'اسحب الفيديو هنا';
+  document.getElementById('dzSub').textContent = 'أو انقر لاختيار ملف\nالحد الأقصى 500 ميغابايت';
+  lucide.createIcons();
+}
+</script>
+
+<!-- ── Bottom Navigation (Mobile) ────────────────────────────────────────── -->
+<style>
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:calc(60px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(8,8,8,.95);border-top:1px solid var(--border);backdrop-filter:blur(20px);z-index:50;justify-content:space-around;align-items:center}
+.bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 12px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:10px;font-family:var(--font-main);font-weight:500;transition:color .2s;flex:1;text-decoration:none}
+.bottom-nav-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav-item.active,.bottom-nav-item:hover{color:var(--accent)}
+.bottom-nav-upload-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;text-decoration:none}
+.bottom-nav-upload{width:44px;height:44px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.bottom-nav-upload svg{width:22px;height:22px;stroke:#000;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.bn-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000}
+@media(max-width:600px){
+  .bottom-nav{display:flex}
+  body{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+}
+</style>
+<nav class="bottom-nav">
+  <a href="/index.html" class="bottom-nav-item ">
+    <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    الرئيسية
+  </a>
+  <a href="/search.html" class="bottom-nav-item ">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    بحث
+  </a>
+  <a href="/upload.html" class="bottom-nav-upload-wrap">
+    <div class="bottom-nav-upload">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    </div>
+  </a>
+  <a href="/profile.html" class="bottom-nav-item ">
+    <div class="bn-avatar" id="bnAvatar_upload">أ</div>
+    حسابي
+  </a>
+</nav>
+<script>
+(function(){
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  var u = JSON.parse(localStorage.getItem('baseer_user')||'null');
+  var el = document.getElementById('bnAvatar_upload');
+  if(el && u) el.textContent = u.name?.[0]||'أ';
+})();
+</script>
+
+</body>
+</html>

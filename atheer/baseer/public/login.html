@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="بصير">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="style.css">
+<title>بصير — تسجيل الدخول</title>
+<style>
+/* ── Layout ── */
+html,body{display:flex;align-items:stretch;min-height:100vh;overflow-x:hidden}
+.auth-layout{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;width:100%}
+
+/* ── Visual Side ── */
+.visual-side{
+  background:linear-gradient(160deg,#050d05 0%,#060e1a 45%,#120620 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:60px 48px;position:relative;overflow:hidden;
+}
+.vis-glow{position:absolute;border-radius:50%;pointer-events:none}
+.vis-glow-1{width:500px;height:500px;background:radial-gradient(circle,rgba(200,245,100,.07) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:gPulse 5s ease-in-out infinite}
+.vis-glow-2{width:300px;height:300px;background:radial-gradient(circle,rgba(100,212,245,.06) 0%,transparent 70%);top:10%;right:5%;animation:gPulse 4s ease-in-out infinite .8s}
+.vis-glow-3{width:200px;height:200px;background:radial-gradient(circle,rgba(167,139,250,.06) 0%,transparent 70%);bottom:15%;left:10%;animation:gPulse 3.5s ease-in-out infinite 1.2s}
+@keyframes gPulse{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
+.vis-logo{font-family:var(--font-mono);font-size:52px;color:var(--accent);letter-spacing:8px;font-weight:700;position:relative;z-index:2;margin-bottom:8px}
+.vis-tagline{font-size:14px;color:rgba(255,255,255,.45);text-align:center;line-height:1.8;max-width:280px;position:relative;z-index:2;margin-bottom:48px}
+.vis-cards{position:relative;z-index:2;width:100%;max-width:300px;display:flex;flex-direction:column;gap:10px}
+.vis-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;backdrop-filter:blur(16px);transition:border-color .3s}
+.vis-card:nth-child(1){animation:float 4s ease-in-out infinite}
+.vis-card:nth-child(2){animation:float 4s ease-in-out infinite .7s;margin-right:-16px}
+.vis-card:nth-child(3){animation:float 4s ease-in-out infinite 1.4s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.vis-card-thumb{width:44px;height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.vis-card-title{font-size:13px;font-weight:600;margin-bottom:3px;line-height:1.3}
+.vis-card-meta{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.vis-stats{display:flex;gap:36px;margin-top:40px;position:relative;z-index:2}
+.vis-stat-num{font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--accent);text-align:center}
+.vis-stat-lbl{font-size:11px;color:var(--muted);text-align:center;margin-top:2px}
+
+/* ── Auth Side ── */
+.auth-side{display:flex;align-items:center;justify-content:center;padding:60px 48px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto}
+.auth-box{width:100%;max-width:420px}
+.auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+.auth-brand-logo{font-family:var(--font-mono);font-size:22px;color:var(--accent);letter-spacing:4px;font-weight:700}
+.auth-brand-atheer{font-size:11px;color:rgba(167,139,250,.6);background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.15);padding:3px 10px;border-radius:20px;font-family:var(--font-mono);letter-spacing:2px}
+.auth-title{font-size:26px;font-weight:800;margin-bottom:6px}
+.auth-sub{font-size:14px;color:var(--muted);margin-bottom:28px}
+
+/* ── Tabs ── */
+.auth-tabs{display:flex;background:var(--surface2);border-radius:12px;padding:4px;margin-bottom:28px}
+.auth-tab{flex:1;padding:10px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s;font-family:var(--font-main)}
+.auth-tab.active{background:var(--surface3);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+
+/* ── Fields ── */
+.auth-field{margin-bottom:16px}
+.auth-label{display:block;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px}
+.auth-input-wrap{position:relative}
+.auth-input-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;display:flex}
+.auth-input-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.auth-input{
+  width:100%;background:var(--surface2);border:1.5px solid var(--border);
+  color:var(--text);font-size:14px;padding:12px 44px 12px 14px;
+  border-radius:10px;outline:none;font-family:var(--font-main);
+  transition:border-color .2s,background .2s;
+}
+.auth-input:focus{border-color:rgba(200,245,100,.4);background:rgba(200,245,100,.02)}
+.auth-input::placeholder{color:var(--muted)}
+.auth-input.has-eye{padding-left:44px}
+.auth-eye{position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);padding:4px;display:flex;align-items:center;transition:color .2s}
+.auth-eye:hover{color:var(--text)}
+.auth-eye svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.auth-field-error{font-size:11px;color:var(--danger);margin-top:5px;display:none}
+.auth-field-error.show{display:block}
+.auth-hint{font-size:11px;color:var(--muted);margin-top:5px}
+
+/* handle preview */
+.handle-preview{font-size:12px;color:var(--accent);margin-top:5px;font-family:var(--font-mono);display:none;opacity:.7}
+
+/* strength */
+.strength-bar{height:3px;background:var(--surface3);border-radius:3px;margin-top:8px;overflow:hidden;display:none}
+.strength-fill{height:100%;border-radius:3px;width:0%;transition:width .3s,background .3s}
+.strength-lbl{font-size:11px;margin-top:4px;display:none}
+
+/* ── Error Banner ── */
+.auth-error{background:rgba(245,100,100,.08);border:1px solid rgba(245,100,100,.25);color:var(--danger);border-radius:10px;padding:11px 14px;font-size:13px;margin-bottom:16px;display:none;align-items:center;gap:8px}
+.auth-error.show{display:flex}
+.auth-error svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+
+/* ── Submit ── */
+.auth-submit{
+  width:100%;padding:14px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,var(--accent),#a8e840);
+  color:#000;font-size:15px;font-weight:700;font-family:var(--font-main);
+  cursor:pointer;transition:opacity .2s,transform .1s;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  margin-top:8px;
+}
+.auth-submit:hover{opacity:.9}
+.auth-submit:active{transform:scale(.98)}
+.auth-submit:disabled{opacity:.5;cursor:not-allowed}
+.auth-submit svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* divider */
+.auth-divider{display:flex;align-items:center;gap:12px;margin:16px 0}
+.auth-divider-line{flex:1;height:1px;background:var(--border)}
+.auth-divider-text{font-size:12px;color:var(--muted)}
+
+/* terms */
+.auth-terms{font-size:12px;color:var(--muted);text-align:center;line-height:1.7;margin-top:14px}
+.auth-terms a{color:var(--accent2);text-decoration:none}
+
+/* remember */
+.auth-remember{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.check-row{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--muted)}
+.check-row input{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
+
+/* ── Success ── */
+.auth-success{display:none;text-align:center;padding:32px 0}
+.auth-success-icon{margin-bottom:20px;display:flex;justify-content:center;color:var(--accent);animation:popIn .5s ease}
+.auth-success-icon svg{width:72px;height:72px;stroke:currentColor;fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+@keyframes popIn{0%{transform:scale(.3)}70%{transform:scale(1.1)}100%{transform:scale(1)}}
+
+/* mobile */
+@media(max-width:768px){
+  .auth-layout{grid-template-columns:1fr}
+  .visual-side{display:none}
+  .auth-side{padding:32px 24px;align-items:flex-start;padding-top:48px}
+}
+</style>
+</head>
+<body>
+<div class="auth-layout">
+
+  <!-- Visual -->
+  <div class="visual-side">
+    <div class="vis-glow vis-glow-1"></div>
+    <div class="vis-glow vis-glow-2"></div>
+    <div class="vis-glow vis-glow-3"></div>
+    <div class="vis-logo">بصير</div>
+    <div class="vis-tagline">تغذية بصرية يومية تريح عيونك وتلهم عقلك بأجمل لحظات العالم</div>
+    <div class="vis-cards">
+      <div class="vis-card">
+        <div class="vis-card-thumb" style="background:linear-gradient(135deg,#ff6b35,#2c1654)">🏔️</div>
+        <div>
+          <div class="vis-card-title">جبال الأطلس عند الغروب</div>
+          <div class="vis-card-meta">👁 198K · ❤️ 24.2K</div>
+          <span class="badge badge-accent" style="margin-top:5px;font-size:10px">طبيعة</span>
+        </div>
+      </div>
+      <div class="vis-card">
+        <div class="vis-card-thumb" style="background:linear-gradient(135deg,#8B4513,#FFD700)">🏜️</div>
+        <div>
+          <div class="vis-card-title">الصحراء الكبرى</div>
+          <div class="vis-card-meta">👁 320K · ❤️ 41.5K</div>
+          <span class="badge badge-accent" style="margin-top:5px;font-size:10px">الأكثر مشاهدة</span>
+        </div>
+      </div>
+      <div class="vis-card">
+        <div class="vis-card-thumb" style="background:linear-gradient(135deg,#006994,#ff8c00)">🌊</div>
+        <div>
+          <div class="vis-card-title">شاطئ وهران</div>
+          <div class="vis-card-meta">👁 176K · ❤️ 29.8K</div>
+          <span class="badge badge-blue" style="margin-top:5px;font-size:10px">بحر</span>
+        </div>
+      </div>
+    </div>
+    <div class="vis-stats">
+      <div><div class="vis-stat-num">50K+</div><div class="vis-stat-lbl">مستخدم</div></div>
+      <div><div class="vis-stat-num">2M+</div><div class="vis-stat-lbl">مشاهدة</div></div>
+      <div><div class="vis-stat-num">10K+</div><div class="vis-stat-lbl">مقطع</div></div>
+    </div>
+  </div>
+
+  <!-- Auth -->
+  <div class="auth-side">
+    <div class="auth-box">
+
+      <!-- Brand -->
+      <div class="auth-brand">
+        <div class="auth-brand-logo">بصير</div>
+        <div class="auth-brand-atheer">أثير</div>
+      </div>
+
+      <!-- Form -->
+      <div id="formState">
+        <div class="auth-title" id="authTitle">مرحباً بك 👋</div>
+        <div class="auth-sub" id="authSub">سجّل دخولك أو أنشئ حساباً جديداً</div>
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchMode(this,'login')">تسجيل الدخول</button>
+          <button class="auth-tab" onclick="switchMode(this,'register')">حساب جديد</button>
+        </div>
+
+        <div class="auth-error" id="errorBanner">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="errorText"></span>
+        </div>
+
+        <!-- الاسم الكامل (تسجيل) -->
+        <div class="auth-field" id="nameField" style="display:none">
+          <label class="auth-label">الاسم الكامل</label>
+          <div class="auth-input-wrap">
+            <div class="auth-input-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <input class="auth-input" id="nameInput" type="text" placeholder="اسمك الكامل" oninput="genHandle()">
+          </div>
+        </div>
+
+        <!-- اسم المستخدم (تسجيل) -->
+        <div class="auth-field" id="usernameField" style="display:none">
+          <label class="auth-label">اسم المستخدم</label>
+          <div class="auth-input-wrap">
+            <div class="auth-input-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <input class="auth-input" id="usernameInput" type="text"
+              placeholder="omar_baseer"
+              oninput="validateUsername()" autocomplete="username" dir="ltr"
+              style="font-family:var(--font-mono);font-size:13px">
+          </div>
+          <div class="handle-preview" id="handlePreview"></div>
+          <div class="auth-field-error" id="usernameError">اسم المستخدم غير صالح (أحرف وأرقام و _ فقط، 3-20 حرف)</div>
+          <div class="auth-hint">سيظهر كـ @اسمك في بصير</div>
+        </div>
+
+        <!-- البريد -->
+        <div class="auth-field">
+          <label class="auth-label">البريد الإلكتروني</label>
+          <div class="auth-input-wrap">
+            <div class="auth-input-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <input class="auth-input" id="emailInput" type="email"
+              placeholder="example@email.com"
+              oninput="validateEmail()" autocomplete="email" dir="ltr">
+          </div>
+          <div class="auth-field-error" id="emailError">بريد إلكتروني غير صالح</div>
+        </div>
+
+        <!-- كلمة المرور -->
+        <div class="auth-field">
+          <label class="auth-label">كلمة المرور</label>
+          <div class="auth-input-wrap">
+            <div class="auth-input-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <input class="auth-input has-eye" id="passInput" type="password"
+              placeholder="أدخل كلمة المرور"
+              oninput="checkStrength()" autocomplete="current-password">
+            <button class="auth-eye" onclick="toggleEye()" id="eyeBtn" type="button">
+              <svg id="eyeIcon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="strength-bar" id="strengthBar"><div class="strength-fill" id="strengthFill"></div></div>
+          <div class="strength-lbl" id="strengthLbl"></div>
+        </div>
+
+        <!-- تأكيد كلمة المرور (تسجيل) -->
+        <div class="auth-field" id="confirmField" style="display:none">
+          <label class="auth-label">تأكيد كلمة المرور</label>
+          <div class="auth-input-wrap">
+            <div class="auth-input-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <input class="auth-input" id="confirmInput" type="password"
+              placeholder="أعد كتابة كلمة المرور"
+              oninput="validateConfirm()" autocomplete="new-password">
+          </div>
+          <div class="auth-field-error" id="confirmError">كلمتا المرور غير متطابقتين</div>
+        </div>
+
+        <!-- تذكّرني (دخول) -->
+        <div class="auth-remember" id="loginExtras">
+          <label class="check-row">
+            <input type="checkbox" id="rememberMe" checked>
+            <span>تذكّرني</span>
+          </label>
+          <a href="#" style="font-size:13px;color:var(--accent2)">نسيت كلمة المرور؟</a>
+        </div>
+
+        <button class="auth-submit" id="submitBtn" onclick="handleSubmit()" type="button">
+          <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span id="submitLbl">تسجيل الدخول</span>
+        </button>
+
+        <div class="auth-terms">
+          بالمتابعة فأنت توافق على <a href="#">شروط الاستخدام</a> و<a href="#">سياسة الخصوصية</a> لمنصات أثير
+        </div>
+      </div>
+
+      <!-- Success -->
+      <div class="auth-success" id="successState">
+        <div class="auth-success-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="auth-title mb-8" id="successTitle">مرحباً بك في بصير!</div>
+        <div class="auth-sub mb-24" id="successSub">تم تسجيل دخولك بنجاح</div>
+        <div class="spinner" style="margin:0 auto 16px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+let mode = 'login', eyeOpen = false;
+
+window.addEventListener('load', () => {
+  if (API.isLoggedIn()) { window.location.href = '/index.html'; return; }
+  // تحقق من ?mode=register في URL
+  const p = new URLSearchParams(location.search);
+  if (p.get('mode') === 'register') {
+    switchMode(document.querySelectorAll('.auth-tab')[1], 'register');
+  }
+});
+
+// ── تبديل الوضع ──────────────────────────────────────────────────────────────
+function switchMode(el, m) {
+  mode = m;
+  hideError();
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const isReg = m === 'register';
+  document.getElementById('nameField').style.display     = isReg ? 'block' : 'none';
+  document.getElementById('usernameField').style.display = isReg ? 'block' : 'none';
+  document.getElementById('confirmField').style.display  = isReg ? 'block' : 'none';
+  document.getElementById('loginExtras').style.display   = isReg ? 'none'  : 'flex';
+  document.getElementById('strengthBar').style.display   = isReg ? 'block' : 'none';
+  document.getElementById('authTitle').textContent       = isReg ? 'إنشاء حساب جديد ✨' : 'مرحباً بك 👋';
+  document.getElementById('authSub').textContent         = isReg ? 'انضم لمجتمع بصير اليوم' : 'سجّل دخولك للمتابعة';
+  const btn = document.getElementById('submitBtn');
+  const lbl = document.getElementById('submitLbl');
+  if (isReg) {
+    btn.querySelector('svg').innerHTML = '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>';
+    lbl.textContent = 'إنشاء الحساب';
+  } else {
+    btn.querySelector('svg').innerHTML = '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>';
+    lbl.textContent = 'تسجيل الدخول';
+  }
+}
+
+// ── توليد handle من الاسم ─────────────────────────────────────────────────────
+function genHandle() {
+  const name  = document.getElementById('nameInput').value.trim();
+  const uEl   = document.getElementById('usernameInput');
+  const prev  = document.getElementById('handlePreview');
+  if (!uEl.value && name) {
+    const suggested = name.toLowerCase()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-z0-9_\u0600-\u06FF]/g, '')
+      .substring(0, 20);
+    uEl.value = suggested;
+    prev.style.display = 'block';
+    prev.textContent   = '@' + suggested;
+  }
+}
+
+// ── التحقق من اسم المستخدم ───────────────────────────────────────────────────
+function validateUsername() {
+  const val  = document.getElementById('usernameInput').value.trim();
+  const prev = document.getElementById('handlePreview');
+  const err  = document.getElementById('usernameError');
+  const ok   = /^[a-zA-Z0-9_\u0600-\u06FF]{3,20}$/.test(val);
+  err.classList.toggle('show', val.length > 0 && !ok);
+  if (val && ok) {
+    prev.style.display = 'block';
+    prev.textContent   = '@' + val;
+  } else {
+    prev.style.display = 'none';
+  }
+  return ok;
+}
+
+// ── البريد ───────────────────────────────────────────────────────────────────
+function validateEmail() {
+  const v  = document.getElementById('emailInput').value;
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  document.getElementById('emailError').classList.toggle('show', v.length > 0 && !ok);
+  return ok;
+}
+
+// ── قوة كلمة المرور ──────────────────────────────────────────────────────────
+function checkStrength() {
+  if (mode !== 'register') return;
+  const p    = document.getElementById('passInput').value;
+  const fill = document.getElementById('strengthFill');
+  const lbl  = document.getElementById('strengthLbl');
+  lbl.style.display = p ? 'block' : 'none';
+  let score = 0;
+  if (p.length >= 8)           score++;
+  if (/[A-Z]/.test(p))         score++;
+  if (/[0-9]/.test(p))         score++;
+  if (/[^A-Za-z0-9]/.test(p)) score++;
+  const lvls = [
+    {w:'18%',c:'#f56464',t:'ضعيف جداً'},
+    {w:'40%',c:'#f5a064',t:'ضعيف'},
+    {w:'65%',c:'#f5d464',t:'مقبول'},
+    {w:'85%',c:'#90d44c',t:'قوي'},
+    {w:'100%',c:'#c8f564',t:'ممتاز ✓'},
+  ];
+  const l = lvls[Math.min(score, 4)];
+  fill.style.width = l.w; fill.style.background = l.c;
+  lbl.textContent = l.t; lbl.style.color = l.c;
+}
+
+// ── تأكيد كلمة المرور ────────────────────────────────────────────────────────
+function validateConfirm() {
+  const ok = document.getElementById('passInput').value === document.getElementById('confirmInput').value;
+  document.getElementById('confirmError').classList.toggle('show', document.getElementById('confirmInput').value.length > 0 && !ok);
+  return ok;
+}
+
+// ── إظهار/إخفاء كلمة المرور ──────────────────────────────────────────────────
+function toggleEye() {
+  eyeOpen = !eyeOpen;
+  document.getElementById('passInput').type = eyeOpen ? 'text' : 'password';
+  document.getElementById('eyeIcon').innerHTML = eyeOpen
+    ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+}
+
+// ── خطأ ──────────────────────────────────────────────────────────────────────
+function showError(msg) {
+  const el = document.getElementById('errorBanner');
+  document.getElementById('errorText').textContent = msg;
+  el.classList.add('show');
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+function hideError() {
+  document.getElementById('errorBanner').classList.remove('show');
+}
+
+// ── الإرسال ───────────────────────────────────────────────────────────────────
+async function handleSubmit() {
+  hideError();
+  const email = document.getElementById('emailInput').value.trim();
+  const pass  = document.getElementById('passInput').value;
+
+  if (!email || !validateEmail()) { document.getElementById('emailInput').focus(); return; }
+  if (!pass) { document.getElementById('passInput').focus(); return; }
+  if (mode === 'register') {
+    if (!document.getElementById('nameInput').value.trim()) { showError('الاسم الكامل مطلوب'); return; }
+    if (!validateUsername()) { showError('اسم المستخدم غير صالح'); return; }
+    if (!validateConfirm()) return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="border-top-color:#000"></span> <span>جاري التحقق...</span>';
+
+  try {
+    if (mode === 'register') {
+      const name     = document.getElementById('nameInput').value.trim();
+      const username = document.getElementById('usernameInput').value.trim();
+      // نُرسل username كـ handle
+      await API.auth.registerWithUsername(name, username, email, pass);
+      document.getElementById('successTitle').textContent = `أهلاً ${name}! 🎉`;
+      document.getElementById('successSub').textContent   = `حسابك @${username} جاهز — استمتع ببصير`;
+    } else {
+      await API.auth.login(email, pass);
+    }
+
+    document.getElementById('formState').style.display  = 'none';
+    document.getElementById('successState').style.display = 'block';
+    setTimeout(() => { window.location.href = '/index.html'; }, 1800);
+
+  } catch(err) {
+    showError(err.message || 'حدث خطأ، حاول مجدداً');
+    btn.disabled = false;
+    btn.innerHTML = mode === 'register'
+      ? '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span>إنشاء الحساب</span>'
+      : '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span>تسجيل الدخول</span>';
+  }
+}
+
+// Enter key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSubmit();
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+</script>
+</body>
+</html>
