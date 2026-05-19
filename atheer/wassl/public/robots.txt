@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin.html
-Disallow: /uploads/
-
-Sitemap: https://nubl-1.onrender.com/sitemap.xml
